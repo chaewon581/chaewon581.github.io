@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>세 대</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="홈으로">세 대</a>
+      <nav class="nav">
+        <a href="handae.html">한 대</a>
+        <a href="dudae.html">두 대</a>
+        <a href="sedae.html">세 대</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="hero container">
+    <h1 class="hero-title">세 대</h1>
+    <p class="hero-sub">세 가지 장면으로 만나는 우리 동네의 작은 플랫폼</p>
+
+    <section class="cards">
+      <a class="card" href="handae.html">
+        <h2>한 대 <span>담소 공간</span></h2>
+        <p>차 한 잔과 함께 이야기가 시작되는 곳</p>
+      </a>
+      <a class="card" href="dudae.html">
+        <h2>두 대 <span>플리마켓 공간</span></h2>
+        <p>만들고 나누는 작은 장터</p>
+      </a>
+      <a class="card" href="sedae.html">
+        <h2>세 대 <span>전시 공간</span></h2>
+        <p>작품과 기록이 머무는 갤러리</p>
+      </a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">© <span id="year"></span> 세 대</div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
