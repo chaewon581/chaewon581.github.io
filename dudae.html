@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>두 대 — 플리마켓 공간 | 세 대</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .filter-bar { display: flex; gap: 6px; padding: 10px; flex-wrap: wrap; }
+    .filter-bar button { padding: 6px 12px; border: none; border-radius: 20px; background: #f3f4f6; font-size: 14px; cursor: pointer; }
+    .filter-bar button.active { background: #ffeb3b; font-weight: bold; }
+    .item-list { display: flex; flex-direction: column; gap: 12px; padding: 10px; }
+    .item-card { background: #fff; border-radius: 12px; padding: 10px; display: flex; gap: 10px; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+    .item-card img { width: 50px; height: 50px; object-fit: cover; border-radius: 10px; }
+    .item-card p { margin: 0; font-size: 14px; line-height: 1.4; }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -20,21 +29,31 @@
 
   <main class="container page">
     <h1 class="page-title">두 대 <span>플리마켓 공간</span></h1>
-    <p class="lead">메이커, 창작자, 동네 상인이 만나는 주말형 마켓</p>
-
-    <section class="section">
-      <h2>참여 안내</h2>
-      <ul class="bullets">
-        <li>운영: 매월 첫째·셋째 토/일 12:00–18:00</li>
-        <li>부스: 2m × 2m, 테이블/의자 제공</li>
-        <li>신청: 이메일 또는 구글폼 (오픈 예정)</li>
-      </ul>
-    </section>
-
-    <section class="section">
-      <h2>부대 프로그램</h2>
-      <p>원데이 클래스, 업사이클 워크숍, 라이브 드로잉 등과 연계됩니다.</p>
-    </section>
+    <div class="filter-bar">
+      <button class="active">전체</button>
+      <button>방금 전</button>
+      <button>저렴한 순</button>
+      <button>저렴한 순</button>
+      <button>저렴한 순</button>
+    </div>
+    <div class="item-list">
+      <div class="item-card">
+        <img src="images/ggum.png" alt="물품 이미지">
+        <p><strong>급처</strong> 옛날에 1번 손 모자 팝니다!!</p>
+      </div>
+      <div class="item-card">
+        <img src="images/ggum.png" alt="물품 이미지">
+        <p>아디다스 후드집업 2번 입었어요~ 네고 가능합니다.</p>
+      </div>
+      <div class="item-card">
+        <img src="images/ggum.png" alt="물품 이미지">
+        <p>명령서를 발부할 때 첨부할 텍스트 메시지를 입력해 주세요</p>
+      </div>
+      <div class="item-card">
+        <img src="images/ggum.png" alt="물품 이미지">
+        <p>명령서를 발부할 때 첨부할 텍스트 메시지를 입력해 주세요</p>
+      </div>
+    </div>
   </main>
 
   <footer class="site-footer">
