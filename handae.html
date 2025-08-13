@@ -5,49 +5,271 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>한 대 — 담소 공간 | 세 대</title>
   <link rel="stylesheet" href="styles.css" />
+  <!-- Leaflet (오픈스트리트맵) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <!-- Leaflet Routing Machine (OSRM 길찾기) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+  <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
   <style>
-    body { background-color: #fff; color: #333; }
-    header, footer { background-color: #fff; }
-    .location-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid #ddd; }
-    .location-header h1 { font-size: 18px; margin: 0; font-weight: 600; }
-    .location-header h1 span { color: #b5a14a; }
-    .location-form { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
-    .input-group { display: flex; align-items: center; border-bottom: 1px solid #ccc; }
-    .input-group input { flex: 1; border: none; padding: 8px; font-size: 14px; }
-    .input-group input:focus { outline: none; }
-    .destination { font-size: 14px; }
-    .destination strong { font-weight: 600; }
-    .distance-info { margin-top: 8px; font-size: 14px; }
-    .distance-info strong { color: #b5a14a; }
-    .map { height: 150px; background: url('assets/map-placeholder.png') center/cover no-repeat; border-radius: 8px; margin-top: 8px; }
-    .item-input { padding: 8px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; width: 100%; }
+    :root { --olive:#b5a14a; --olive-dark:#6b5b23; }
+    body { background:#fff; color:#333; }
+    header, footer { background:#fff; }
+    .location-header { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-bottom:1px solid #ddd; }
+    .location-header h1 { font-size:18px; margin:0; font-weight:700; }
+    .location-header h1 span { color:var(--olive); }
+
+    .layout { display:grid; grid-template-columns: 1fr; gap:16px; max-width:980px; margin:0 auto; padding:16px; }
+    @media (min-width: 880px){ .layout { grid-template-columns: 2fr 1fr; } }
+
+    .card { border:1px solid #e5e7eb; border-radius:12px; padding:14px; background:#fff; }
+    .muted { color:#6b7280; font-size:13px; }
+
+    .input-group { display:flex; align-items:center; border-bottom:1px solid #ccc; }
+    .input-group input { flex:1; border:none; padding:10px 8px; font-size:14px; }
+    .input-group input:focus { outline:none; }
+
+    .destination { font-size:14px; }
+    .destination strong { font-weight:700; }
+    .distance-info { font-size:14px; }
+    .distance-info strong { color:var(--olive); }
+
+    #map { height:360px; border-radius:12px; border:1px solid #e5e7eb; overflow:hidden; }
+    .actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .btn { background:var(--olive); color:#fff; border:0; border-radius:999px; padding:10px 14px; cursor:pointer; font-weight:700; }
+    .btn.secondary { background:#f3f4f6; color:#333; }
+    .btn.ghost { background:transparent; border:1px solid #e5e7eb; color:#333; }
+    .leaflet-routing-container { display:none; } /* 기본 패널 숨김 */
+
+    .nearby-list { display:flex; flex-direction:column; gap:10px; max-height:360px; overflow:auto; }
+    .nearby-item { display:flex; justify-content:space-between; align-items:center; border:1px solid #e5e7eb; border-radius:10px; padding:10px 12px; }
+    .nearby-title { font-weight:700; }
+    .pill { background:#fff6d6; color:#6b5b23; border:1px solid #f2e6a8; padding:4px 8px; border-radius:999px; font-size:12px; }
   </style>
 </head>
 <body>
   <header class="location-header">
-    <a href="index.html">←</a>
+    <a href="index.html" aria-label="뒤로">←</a>
     <h1>내 주변 <span>세 대</span>장소</h1>
-    <a href="#" style="color:#b5a14a;">완료</a>
+    <a href="#" style="color:var(--olive)" aria-disabled="true">완료</a>
   </header>
 
-  <main class="location-form">
-    <div class="input-group">
-      <input type="text" placeholder="상세주소를 입력해주세요." />
-      <span>📍</span>
-    </div>
-    <div class="destination">
-      <strong>도착 장소:</strong> 유성구 세 대
-    </div>
-    <div class="distance-info">
-      거리/예상시간 <strong>도보 15분</strong> 1.1km
-    </div>
-    <div class="map"></div>
-    <input class="item-input" type="text" placeholder="원하는 물건을 입력해주세요" />
+  <main class="layout">
+    <section class="card">
+      <div class="input-group" aria-label="상세주소 입력">
+        <input type="text" placeholder="상세주소를 입력해주세요." />
+        <span aria-hidden="true">📍</span>
+      </div>
+
+      <div class="destination" style="margin-top:8px;">
+        <strong>도착 장소:</strong> <span id="destLabel">유성구 세 대</span>
+      </div>
+      <div class="distance-info" style="margin-top:6px;">
+        거리/예상시간 <strong id="eta">위치 확인 중…</strong> <span id="dist" class="muted"></span>
+      </div>
+
+      <div id="map" role="region" aria-label="지도" style="margin:10px 0 12px;"></div>
+      <div class="actions">
+        <button id="locate" class="btn" type="button">현재 위치 가져오기</button>
+        <button id="watch" class="btn ghost" type="button" aria-pressed="false">실시간 추적 켜기</button>
+        <button id="resetView" class="btn secondary" type="button">목적지 보기</button>
+      </div>
+
+      <div style="margin-top:12px;">
+        <input id="query" class="item-input" type="text" placeholder="원하는 물건을 입력해주세요" style="padding:10px 12px; border-radius:10px; border:1px solid #ccc; width:100%;" />
+        <p class="muted">※ 위치 권한을 허용하면 현재 위치에서 목적지까지 실제 **도보 경로**로 계산됩니다.</p>
+      </div>
+    </section>
+
+    <aside class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <h3 style="margin:0; font-size:16px;">주변 공유공간</h3>
+        <div>
+          <span class="muted">반경</span>
+          <select id="radius" class="btn ghost" style="padding:6px 10px;">
+            <option value="0.5">0.5 km</option>
+            <option value="1.0" selected>1 km</option>
+            <option value="2.0">2 km</option>
+            <option value="3.0">3 km</option>
+          </select>
+        </div>
+      </div>
+      <div id="nearby" class="nearby-list" aria-live="polite"></div>
+    </aside>
   </main>
 
   <footer class="site-footer">
     <div class="container">© <span id="year"></span> 세 대</div>
   </footer>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ===== 설정값 =====
+    // 기본 목적지 좌표(변경 가능)
+    const DEFAULT_DEST = { lat: 36.3629, lng: 127.3568, label: '세 대 (유성구)' };
+
+    // 주변 공유공간(샘플 데이터) — 실제 데이터로 교체하세요
+    const PLACES = [
+      { name: '세 대 라운지', type: '공유공간', lat: 36.3642, lng: 127.3561 },
+      { name: '유성 공유작업실', type: '메이커스페이스', lat: 36.3605, lng: 127.3610 },
+      { name: '동네 스터디룸', type: '스터디카페', lat: 36.3674, lng: 127.3518 },
+      { name: '작은 전시실', type: '갤러리', lat: 36.3588, lng: 127.3499 }
+    ];
+
+    // ===== 지도/길찾기 초기화 =====
+    const map = L.map('map', { zoomControl: true });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    let dest = { ...DEFAULT_DEST };
+    const destMarker = L.marker([dest.lat, dest.lng]).addTo(map).bindPopup(dest.label);
+    map.setView([dest.lat, dest.lng], 15);
+
+    let userMarker = null;
+    let watchId = null;
+
+    // Routing Machine — OSRM(공용 서버)
+    let routingControl = L.Routing.control({
+      waypoints: [],
+      lineOptions: { styles: [{ color: '#b5a14a', weight: 6, opacity: 0.9 }] },
+      addWaypoints: false,
+      draggableWaypoints: false,
+      routeWhileDragging: false,
+      show: false,
+      router: L.Routing.osrmv1({
+        serviceUrl: 'https://router.project-osrm.org/route/v1',
+        profile: 'foot'
+      })
+    }).addTo(map);
+
+    routingControl.on('routesfound', function(e){
+      const best = e.routes[0];
+      if (!best) return;
+      const meters = best.summary.totalDistance;
+      const seconds = best.summary.totalTime;
+      document.getElementById('dist').textContent = formatDistance(meters);
+      document.getElementById('eta').textContent = '도보 ' + Math.max(1, Math.round(seconds/60)) + '분';
+    });
+
+    function formatDistance(m){
+      if (!isFinite(m)) return '';
+      if (m >= 1000) return (m/1000).toFixed(1) + ' km';
+      return Math.round(m) + ' m';
+    }
+
+    function setUser(lat, lng){
+      if (!userMarker) {
+        userMarker = L.marker([lat, lng], { title: '현재 위치' }).addTo(map).bindPopup('현재 위치');
+      } else {
+        userMarker.setLatLng([lat, lng]);
+      }
+      routingControl.setWaypoints([
+        L.latLng(lat, lng),
+        L.latLng(dest.lat, dest.lng)
+      ]);
+      refreshNearby();
+    }
+
+    function locateOnce(){
+      if (!navigator.geolocation){
+        document.getElementById('eta').textContent = '이 브라우저는 위치를 지원하지 않아요';
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        pos => setUser(pos.coords.latitude, pos.coords.longitude),
+        err => { console.warn(err); document.getElementById('eta').textContent = '위치 권한이 필요합니다'; },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 10000 }
+      );
+    }
+
+    function toggleWatch(){
+      const btn = document.getElementById('watch');
+      const on = btn.getAttribute('aria-pressed') === 'true';
+      if (on){
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+        btn.setAttribute('aria-pressed','false');
+        btn.textContent = '실시간 추적 켜기';
+      } else {
+        if (!navigator.geolocation) return;
+        watchId = navigator.geolocation.watchPosition(
+          pos => setUser(pos.coords.latitude, pos.coords.longitude),
+          err => console.warn(err),
+          { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+        );
+        btn.setAttribute('aria-pressed','true');
+        btn.textContent = '실시간 추적 끄기';
+      }
+    }
+
+    document.getElementById('locate').addEventListener('click', locateOnce);
+    document.getElementById('watch').addEventListener('click', toggleWatch);
+    document.getElementById('resetView').addEventListener('click', ()=>{
+      dest = { ...DEFAULT_DEST };
+      document.getElementById('destLabel').textContent = dest.label;
+      destMarker.setLatLng([dest.lat, dest.lng]).bindPopup(dest.label);
+      if (userMarker){ routingControl.setWaypoints([ userMarker.getLatLng(), L.latLng(dest.lat, dest.lng) ]); }
+      map.setView([dest.lat, dest.lng], 15);
+      refreshNearby();
+    });
+
+    // ===== 주변 공유공간 렌더링 =====
+    const placesLayer = L.layerGroup().addTo(map);
+    const nearbyEl = document.getElementById('nearby');
+    document.getElementById('radius').addEventListener('change', refreshNearby);
+
+    function refreshNearby(){
+      placesLayer.clearLayers();
+      nearbyEl.innerHTML = '';
+      const rkm = parseFloat(document.getElementById('radius').value || '1');
+      const center = userMarker ? userMarker.getLatLng() : L.latLng(dest.lat, dest.lng);
+
+      const enriched = PLACES.map(p => {
+        const d = map.distance(center, L.latLng(p.lat, p.lng));
+        return { ...p, meters: d };
+      }).filter(p => p.meters <= rkm * 1000)
+        .sort((a,b)=> a.meters - b.meters);
+
+      if (!enriched.length){
+        nearbyEl.innerHTML = '<div class="muted">주변 반경 내 결과가 없습니다.</div>';
+        return;
+      }
+
+      enriched.forEach(p => {
+        const m = L.marker([p.lat, p.lng]).addTo(placesLayer).bindPopup(`${p.name}<br><button id="go-${p.lat}-${p.lng}" style="margin-top:6px;" class="btn">여기로 길찾기</button>`);
+        m.on('popupopen', ()=>{
+          const btn = document.getElementById(`go-${p.lat}-${p.lng}`);
+          if (btn) btn.addEventListener('click', ()=> setDestination(p));
+        });
+
+        const item = document.createElement('div');
+        item.className = 'nearby-item';
+        item.innerHTML = `
+          <div>
+            <div class="nearby-title">${p.name}</div>
+            <div class="muted">${p.type} · ${formatDistance(p.meters)}</div>
+          </div>
+          <button class="btn" type="button">길찾기</button>
+        `;
+        item.querySelector('button').addEventListener('click', ()=> setDestination(p));
+        nearbyEl.appendChild(item);
+      });
+    }
+
+    function setDestination(p){
+      dest = { lat: p.lat, lng: p.lng, label: p.name };
+      document.getElementById('destLabel').textContent = dest.label;
+      destMarker.setLatLng([dest.lat, dest.lng]).bindPopup(dest.label).openPopup();
+      if (userMarker){ routingControl.setWaypoints([ userMarker.getLatLng(), L.latLng(dest.lat, dest.lng) ]); }
+      map.setView([dest.lat, dest.lng], 15);
+    }
+
+    // 초기 한 번 시도 & 주변 목록 준비
+    locateOnce();
+    refreshNearby();
+  </script>
 </body>
 </html>
