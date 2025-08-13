@@ -6,59 +6,83 @@
   <title>두 대 — 플리마켓 공간 | 세 대</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    .filter-bar { display: flex; gap: 6px; padding: 10px; flex-wrap: wrap; }
-    .filter-bar button { padding: 6px 12px; border: none; border-radius: 20px; background: #f3f4f6; font-size: 14px; cursor: pointer; }
-    .filter-bar button.active { background: #ffeb3b; font-weight: bold; }
-    .item-list { display: flex; flex-direction: column; gap: 12px; padding: 10px; }
-    .item-card { background: #fff; border-radius: 12px; padding: 10px; display: flex; gap: 10px; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
-    .item-card img { width: 50px; height: 50px; object-fit: cover; border-radius: 10px; }
-    .item-card p { margin: 0; font-size: 14px; line-height: 1.4; }
+    :root { --olive:#b5a14a; --olive-dark:#6b5b23; }
+    body { background:#fff; color:#222; }
+    .market-header { position:sticky; top:0; background:#fff; border-bottom:1px solid #e5e7eb; z-index:5; }
+    .market-title { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; }
+    .market-title h1 { margin:0; font-size:20px; }
+    .market-title h1 .accent { color:var(--olive); font-weight:800; }
+
+    /* 짧은 필터 칩 */
+    .chips { display:flex; gap:8px; padding:8px 16px 12px; overflow:auto; }
+    .chip { white-space:nowrap; appearance:none; border:1px solid #e5e7eb; background:#f6f7f8; color:#222; padding:6px 10px; border-radius:999px; font-size:13px; line-height:1; cursor:pointer; }
+    .chip.is-active { background:#fff9d6; border-color:#f2e6a8; box-shadow: inset 0 0 0 2px var(--olive); }
+
+    /* 리스트 카드 - 더 큰 썸네일 */
+    .list { padding:14px 16px 28px; display:grid; gap:14px; max-width:920px; margin:0 auto; }
+    .item { display:grid; grid-template-columns: 120px 1fr; gap:16px; align-items:center; background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:14px; box-shadow: 0 8px 20px rgba(0,0,0,.04); }
+    .thumb-wrap { display:flex; align-items:center; justify-content:center; }
+    .thumb { width:120px; height:120px; object-fit:contain; }
+    .text { display:flex; align-items:center; min-height:80px; }
+    .text p { margin:0; line-height:1.45; color:#222; font-size:15px; }
+
+    @media (max-width:560px){
+      .item { grid-template-columns: 100px 1fr; }
+      .thumb { width:100px; height:100px; }
+    }
   </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="index.html">세 대</a>
-      <nav class="nav">
-        <a href="handae.html">한 대</a>
-        <a class="active" href="dudae.html" aria-current="page">두 대</a>
-        <a href="sedae.html">세 대</a>
-      </nav>
+  <header class="market-header">
+    <div class="market-title">
+      <a href="index.html" aria-label="뒤로">←</a>
+      <h1>세 대<span class="accent">물품</span> 구경하기</h1>
+      <span style="color:var(--olive-dark); font-weight:700;">완료</span>
     </div>
+    <nav class="chips" aria-label="필터">
+      <button class="chip is-active">전체</button>
+      <button class="chip">방금 전</button>
+      <button class="chip">저렴한 순</button>
+      <button class="chip">최신 순</button>
+      <button class="chip">인기 순</button>
+    </nav>
   </header>
 
-  <main class="container page">
-    <h1 class="page-title">두 대 <span>플리마켓 공간</span></h1>
-    <div class="filter-bar">
-      <button class="active">전체</button>
-      <button>방금 전</button>
-      <button>저렴한 순</button>
-      <button>저렴한 순</button>
-      <button>저렴한 순</button>
-    </div>
-    <div class="item-list">
-      <div class="item-card">
-        <img src="images/ggum.png" alt="물품 이미지">
-        <p><strong>급처</strong> 옛날에 1번 손 모자 팝니다!!</p>
+  <main class="list" aria-live="polite">
+    <article class="item">
+      <div class="thumb-wrap">
+        <img class="thumb" src="images/item-2.jpg" alt="캐릭터 스티커" />
       </div>
-      <div class="item-card">
-        <img src="images/ggum.png" alt="물품 이미지">
-        <p>아디다스 후드집업 2번 입었어요~ 네고 가능합니다.</p>
+      <div class="text"><p><strong>급처)</strong> 옛날에 1번 쓴 모자 팝니다!!</p></div>
+    </article>
+
+    <article class="item">
+      <div class="thumb-wrap">
+        <img class="thumb" src="images/item-1.jpg" alt="캐릭터 스티커" />
       </div>
-      <div class="item-card">
-        <img src="images/ggum.png" alt="물품 이미지">
-        <p>명령서를 발부할 때 첨부할 텍스트 메시지를 입력해 주세요</p>
+      <div class="text"><p>아디다스 후드집업 2번 입었어요~ 네고 가능합니다.</p></div>
+    </article>
+
+    <article class="item">
+      <div class="thumb-wrap">
+        <img class="thumb" src="images/ggum.png" alt="캐릭터 스티커" />
       </div>
-      <div class="item-card">
-        <img src="images/ggum.png" alt="물품 이미지">
-        <p>명령서를 발부할 때 첨부할 텍스트 메시지를 입력해 주세요</p>
+      <div class="text"><p>명령서를 발부할 때 첨부할 텍스트 메시지를 입력해 주세요</p></div>
+    </article>
+
+    <article class="item">
+      <div class="thumb-wrap">
+        <img class="thumb" src="images/ggum.png" alt="캐릭터 스티커" />
       </div>
-    </div>
+      <div class="text"><p>명령서를 발부할 때 첨부할 텍스트 메시지를 입력해 주세요</p></div>
+    </article>
   </main>
 
-  <footer class="site-footer">
-    <div class="container">© <span id="year"></span> 세 대</div>
-  </footer>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script>
+    document.querySelectorAll('.chip').forEach(btn => btn.addEventListener('click', (e)=>{
+      document.querySelectorAll('.chip').forEach(c=>c.classList.remove('is-active'));
+      e.currentTarget.classList.add('is-active');
+    }));
+  </script>
 </body>
 </html>
