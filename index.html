@@ -5,14 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>세 대</title>
   <link rel="stylesheet" href="styles.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- 메인 화면 전용 컬러 오버라이드 -->
+  <style>
+    :root { --olive:#b5a14a; --olive-dark:#6b5b23; }
+    .hero-title { color: var(--olive-dark); text-align: center; }
+    .hero-sub { color:#6b7280; text-align: center; margin-bottom: 40px; }
+    /* 버튼 스타일 */
+    .cards { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--olive);
+      border: none;
+      color: #fff;
+      text-align: center;
+      height: 56px;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .card:hover { background: #a3913e; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(181,161,74,.25); }
+  </style>
 </head>
 <body>
   <header class="site-header">
     <div class="container header-inner">
-      <a class="brand" href="index.html" aria-label="홈으로">세 대</a>
+      <a class="brand" href="index.html" aria-label="홈으로" style="color:var(--olive-dark)">세 대</a>
       <nav class="nav">
         <a href="handae.html">한 대</a>
         <a href="dudae.html">두 대</a>
@@ -23,21 +45,12 @@
 
   <main class="hero container">
     <h1 class="hero-title">세 대</h1>
-    <p class="hero-sub">세 가지 장면으로 만나는 우리 동네의 작은 플랫폼</p>
+    <p class="hero-sub">대전의 세대를 잇다</p>
 
     <section class="cards">
-      <a class="card" href="handae.html">
-        <h2>한 대 <span>담소 공간</span></h2>
-        <p>차 한 잔과 함께 이야기가 시작되는 곳</p>
-      </a>
-      <a class="card" href="dudae.html">
-        <h2>두 대 <span>플리마켓 공간</span></h2>
-        <p>만들고 나누는 작은 장터</p>
-      </a>
-      <a class="card" href="sedae.html">
-        <h2>세 대 <span>전시 공간</span></h2>
-        <p>작품과 기록이 머무는 갤러리</p>
-      </a>
+      <a class="card" href="handae.html">한 대 - 담소 공간</a>
+      <a class="card" href="dudae.html">두 대 - 플리마켓 공간</a>
+      <a class="card" href="sedae.html">세 대 - 전시 공간</a>
     </section>
   </main>
 
@@ -45,8 +58,6 @@
     <div class="container">© <span id="year"></span> 세 대</div>
   </footer>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>

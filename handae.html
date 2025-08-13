@@ -5,36 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>한 대 — 담소 공간 | 세 대</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { background-color: #fff; color: #333; }
+    header, footer { background-color: #fff; }
+    .location-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid #ddd; }
+    .location-header h1 { font-size: 18px; margin: 0; font-weight: 600; }
+    .location-header h1 span { color: #b5a14a; }
+    .location-form { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+    .input-group { display: flex; align-items: center; border-bottom: 1px solid #ccc; }
+    .input-group input { flex: 1; border: none; padding: 8px; font-size: 14px; }
+    .input-group input:focus { outline: none; }
+    .destination { font-size: 14px; }
+    .destination strong { font-weight: 600; }
+    .distance-info { margin-top: 8px; font-size: 14px; }
+    .distance-info strong { color: #b5a14a; }
+    .map { height: 150px; background: url('assets/map-placeholder.png') center/cover no-repeat; border-radius: 8px; margin-top: 8px; }
+    .item-input { padding: 8px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; width: 100%; }
+  </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="index.html">세 대</a>
-      <nav class="nav">
-        <a class="active" href="handae.html" aria-current="page">한 대</a>
-        <a href="dudae.html">두 대</a>
-        <a href="sedae.html">세 대</a>
-      </nav>
-    </div>
+  <header class="location-header">
+    <a href="index.html">←</a>
+    <h1>내 주변 <span>세 대</span>장소</h1>
+    <a href="#" style="color:#b5a14a;">완료</a>
   </header>
 
-  <main class="container page">
-    <h1 class="page-title">한 대 <span>담소 공간</span></h1>
-    <p class="lead">차와 함께 편히 담소를 나누는 라운지형 공간</p>
-
-    <section class="section">
-      <h2>소개</h2>
-      <p>소규모 모임, 북토크, 소리 낮은 워크숍에 적합한 아늑한 공간입니다.</p>
-    </section>
-
-    <section class="section">
-      <h2>이용 안내</h2>
-      <ul class="bullets">
-        <li>운영시간: 화–일 11:00–19:00</li>
-        <li>좌석: 테이블 4, 바 좌석 6</li>
-        <li>대관: 최대 12명, 사전 예약</li>
-      </ul>
-    </section>
+  <main class="location-form">
+    <div class="input-group">
+      <input type="text" placeholder="상세주소를 입력해주세요." />
+      <span>📍</span>
+    </div>
+    <div class="destination">
+      <strong>도착 장소:</strong> 유성구 세 대
+    </div>
+    <div class="distance-info">
+      거리/예상시간 <strong>도보 15분</strong> 1.1km
+    </div>
+    <div class="map"></div>
+    <input class="item-input" type="text" placeholder="원하는 물건을 입력해주세요" />
   </main>
 
   <footer class="site-footer">
