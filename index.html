@@ -5,17 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>세 대</title>
   <link rel="stylesheet" href="styles.css" />
-  <!-- 메인 화면 전용 컬러 오버라이드 -->
+  <!-- 메인 화면 전용 스타일 -->
   <style>
     :root { --olive:#b5a14a; --olive-dark:#6b5b23; }
+
+    body { font-size: 16px; }
+
     .hero-title { color: var(--olive-dark); text-align: center; }
     .hero-sub { color:#6b7280; text-align: center; margin-bottom: 40px; }
+
     /* 버튼 스타일 */
     .cards { display: flex; flex-direction: column; align-items: center; gap: 16px; }
     .card {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       background: var(--olive);
       border: none;
       color: #fff;
@@ -28,7 +30,43 @@
       font-size: 18px;
       font-weight: 600;
     }
-    .card:hover { background: #a3913e; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(181,161,74,.25); }
+    .card:hover {
+      background: #a3913e;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(181,161,74,.25);
+    }
+
+    /* 다국어 전환 버튼 (오른쪽 아래) */
+    .lang-switcher {
+      position: fixed; bottom: 16px; right: 16px;
+      display:flex; gap:6px; z-index:1000;
+      background:#fff; border:1px solid #ccc; border-radius:8px;
+      padding:6px 8px; box-shadow:0 2px 6px rgba(0,0,0,.15);
+    }
+    .lang-switcher button {
+      background:#fff; border:1px solid #ddd; border-radius:6px;
+      padding:4px 8px; font-size:13px; cursor:pointer;
+    }
+    .lang-switcher button.active {
+      background: var(--olive); color:#fff; border-color: var(--olive-dark);
+    }
+
+    /* 글자 확대/축소 버튼 (왼쪽 아래) */
+    .text-zoom {
+      position: fixed; bottom: 16px; left: 16px;
+      display:flex; align-items:center; gap:6px; z-index:1000;
+      background:#fff; border:1px solid #ccc; border-radius:8px;
+      padding:6px 10px; box-shadow:0 2px 6px rgba(0,0,0,.15);
+      font-size:15px;
+    }
+    .text-zoom .zoom-label {
+      margin-right:4px; font-weight:600; color:#333;
+    }
+    .text-zoom button {
+      background:#fff; border:1px solid #ddd; border-radius:6px;
+      padding:4px 8px; font-size:15px; cursor:pointer;
+    }
+    .text-zoom button:disabled { opacity:.6; cursor:default; }
   </style>
 </head>
 <body>
@@ -46,6 +84,7 @@
   <main class="hero container">
     <h1 class="hero-title">세 대</h1>
     <p class="hero-sub">대전의 세대를 잇다</p>
+    <p class="hero-sub">세대 간 소통, 주민교류를 위한 복합 커뮤니티</p>
 
     <section class="cards">
       <a class="card" href="handae.html">한 대 - 담소 공간</a>
@@ -58,6 +97,87 @@
     <div class="container">© <span id="year"></span> 세 대</div>
   </footer>
 
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <!-- 글자 확대/축소 -->
+  <div class="text-zoom" aria-label="글자 크기 조절">
+    <span class="zoom-label">🔍글자 읽기:</span>
+    <button id="zoomOut" title="작게">축소</button>
+    <button id="zoomReset" title="기본">기본</button>
+    <button id="zoomIn" title="크게">확대</button>
+  </div>
+
+  <!-- 언어 선택 UI -->
+  <div class="lang-switcher">
+    <button data-lang="ko" class="active">한국어</button>
+    <button data-lang="en">English</button>
+    <button data-lang="zh">中文</button>
+    <button data-lang="vi">Tiếng Việt</button>
+  </div>
+
+  <script>
+    // footer 연도 자동 업데이트
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // 글자 확대/축소 기능
+    let currentSize = 100;
+    function applyFontSize() {
+      document.body.style.fontSize = currentSize + "%";
+    }
+    document.getElementById('zoomIn').onclick = () => { currentSize = Math.min(currentSize+10, 150); applyFontSize(); };
+    document.getElementById('zoomOut').onclick = () => { currentSize = Math.max(currentSize-10, 70); applyFontSize(); };
+    document.getElementById('zoomReset').onclick = () => { currentSize = 100; applyFontSize(); };
+
+    // 다국어 전환 (예시: 메인 페이지 간단 적용)
+    const i18n = {
+      ko: {
+        title: "세 대",
+        sub1: "대전의 세대를 잇다",
+        sub2: "세대 간 소통, 주민교류를 위한 복합 커뮤니티",
+        btn1: "한 대 - 담소 공간",
+        btn2: "두 대 - 플리마켓 공간",
+        btn3: "세 대 - 전시 공간"
+      },
+      en: {
+        title: "Se Dae",
+        sub1: "Connecting generations in Daejeon",
+        sub2: "A community hub for intergenerational communication",
+        btn1: "Han Dae - Conversation Space",
+        btn2: "Du Dae - Flea Market Space",
+        btn3: "Se Dae - Exhibition Space"
+      },
+      zh: {
+        title: "三代",
+        sub1: "连接大田的世代",
+        sub2: "世代间交流、居民沟通的复合社区",
+        btn1: "一代 - 谈话空间",
+        btn2: "二代 - 跳蚤市场空间",
+        btn3: "三代 - 展览空间"
+      },
+      vi: {
+        title: "Thế Đại",
+        sub1: "Kết nối các thế hệ ở Daejeon",
+        sub2: "Không gian cộng đồng cho sự giao lưu giữa các thế hệ",
+        btn1: "Một Đại - Không gian trò chuyện",
+        btn2: "Hai Đại - Chợ đồ cũ",
+        btn3: "Ba Đại - Không gian triển lãm"
+      }
+    };
+    function applyLang(lang){
+      const t = i18n[lang]; if(!t) return;
+      document.documentElement.lang = lang;
+      document.querySelector(".hero-title").textContent = t.title;
+      document.querySelectorAll(".hero-sub")[0].textContent = t.sub1;
+      document.querySelectorAll(".hero-sub")[1].textContent = t.sub2;
+      document.querySelectorAll(".card")[0].textContent = t.btn1;
+      document.querySelectorAll(".card")[1].textContent = t.btn2;
+      document.querySelectorAll(".card")[2].textContent = t.btn3;
+      localStorage.setItem("lang", lang);
+      document.querySelectorAll(".lang-switcher button").forEach(b=>b.classList.toggle("active", b.dataset.lang===lang));
+    }
+    const saved = localStorage.getItem("lang") || "ko";
+    applyLang(saved);
+    document.querySelectorAll(".lang-switcher button").forEach(b=>{
+      b.addEventListener("click", ()=> applyLang(b.dataset.lang));
+    });
+  </script>
 </body>
 </html>

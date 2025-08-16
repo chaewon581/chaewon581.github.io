@@ -8,35 +8,52 @@
   <style>
     :root { --olive:#b5a14a; --olive-dark:#6b5b23; }
     body { background:#fff; color:#222; }
+
+    /* 상단 마켓 헤더 */
     .market-header { position:sticky; top:0; background:#fff; border-bottom:1px solid #e5e7eb; z-index:5; }
     .market-title { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; }
     .market-title h1 { margin:0; font-size:20px; }
     .market-title h1 .accent { color:var(--olive); font-weight:800; }
 
-    /* 짧은 필터 칩 */
+    /* 필터 칩 */
     .chips { display:flex; gap:8px; padding:8px 16px 12px; overflow:auto; }
     .chip { white-space:nowrap; appearance:none; border:1px solid #e5e7eb; background:#f6f7f8; color:#222; padding:6px 10px; border-radius:999px; font-size:13px; line-height:1; cursor:pointer; }
     .chip.is-active { background:#fff9d6; border-color:#f2e6a8; box-shadow: inset 0 0 0 2px var(--olive); }
 
-    /* 리스트 카드 - 더 큰 썸네일 */
+    /* 제목/설명 */
+    .container { max-width:920px; margin:0 auto; padding:0 16px; }
+    .page-title { color: var(--olive-dark); margin:16px auto 6px; text-align:center; }
+    .page-desc { text-align:center; margin:0 0 16px; color:#333; }
+
+    /* 리스트 카드 */
     .list { padding:14px 16px 28px; display:grid; gap:14px; max-width:920px; margin:0 auto; }
-    .item { display:grid; grid-template-columns: 120px 1fr; gap:16px; align-items:center; background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:14px; box-shadow: 0 8px 20px rgba(0,0,0,.04); }
+    .item { display:grid; grid-template-columns:120px 1fr; gap:16px; align-items:center; background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:14px; box-shadow:0 8px 20px rgba(0,0,0,.04); }
     .thumb-wrap { display:flex; align-items:center; justify-content:center; }
     .thumb { width:120px; height:120px; object-fit:contain; }
     .text { display:flex; align-items:center; min-height:80px; }
     .text p { margin:0; line-height:1.45; color:#222; font-size:15px; }
-
     @media (max-width:560px){
-      .item { grid-template-columns: 100px 1fr; }
+      .item { grid-template-columns:100px 1fr; }
       .thumb { width:100px; height:100px; }
     }
+
+    /* 언어 스위처 */
+    .lang-switcher {
+      position:fixed; right:16px; bottom:12px; display:flex; gap:6px; z-index:1000;
+    }
+    .lang-switcher button {
+      background:#fff; border:1px solid #ccc; border-radius:6px;
+      padding:4px 8px; font-size:13px; cursor:pointer;
+    }
+    .lang-switcher button.active { background:var(--olive); color:#fff; border-color:var(--olive-dark); }
   </style>
 </head>
 <body>
+  <!-- 상단 헤더 -->
   <header class="market-header">
     <div class="market-title">
       <a href="index.html" aria-label="뒤로">←</a>
-      <h1>세 대<span class="accent">물품</span> 구경하기</h1>
+      <h1><span class="accent">두 대</span> - 플리마켓 공간</h1>
       <span style="color:var(--olive-dark); font-weight:700;">완료</span>
     </div>
     <nav class="chips" aria-label="필터">
@@ -48,6 +65,13 @@
     </nav>
   </header>
 
+  <!-- 제목/문구 -->
+  <div class="container">
+    <h1 class="page-title" id="page-title">두 대 - 플리마켓 공간</h1>
+    <p class="page-desc" id="desc">주민이 직접 교환·나눔·판매하는 플리마켓입니다.</p>
+  </div>
+
+  <!-- 리스트 -->
   <main class="list" aria-live="polite">
     <article class="item">
       <div class="thumb-wrap">
@@ -78,11 +102,57 @@
     </article>
   </main>
 
+  <!-- 언어 전환 -->
+  <div class="lang-switcher">
+    <button data-lang="ko" class="active">한국어</button>
+    <button data-lang="en">English</button>
+    <button data-lang="zh">中文</button>
+    <button data-lang="vi">Tiếng Việt</button>
+  </div>
+
   <script>
-    document.querySelectorAll('.chip').forEach(btn => btn.addEventListener('click', (e)=>{
-      document.querySelectorAll('.chip').forEach(c=>c.classList.remove('is-active'));
-      e.currentTarget.classList.add('is-active');
-    }));
+    // 필터 칩 토글
+    document.querySelectorAll('.chip').forEach(btn =>
+      btn.addEventListener('click', (e)=>{
+        document.querySelectorAll('.chip').forEach(c=>c.classList.remove('is-active'));
+        e.currentTarget.classList.add('is-active');
+      })
+    );
+
+    // 다국어 리소스
+    const i18nPage = {
+      ko: {
+        title: "두 대 - 플리마켓 공간",
+        desc: "주민이 직접 교환·나눔·판매하는 플리마켓입니다."
+      },
+      en: {
+        title: "Du Dae - Flea Market Space",
+        desc: "A community-driven flea market for exchange, sharing, and sales."
+      },
+      zh: {
+        title: "二代 - 跳蚤市场空间",
+        desc: "居民自发组织的交换、分享与售卖空间。"
+      },
+      vi: {
+        title: "Du Đại - Không gian chợ trời",
+        desc: "Chợ trời cộng đồng để trao đổi, chia sẻ và bán."
+      }
+    };
+
+    function applyLangPage(lang){
+      const t = i18nPage[lang]; if(!t) return;
+      document.documentElement.lang = lang;
+      document.getElementById('page-title').textContent = t.title;
+      document.getElementById('desc').textContent = t.desc;
+      localStorage.setItem('lang', lang);
+      document.querySelectorAll(".lang-switcher button")
+        .forEach(b=>b.classList.toggle("active", b.dataset.lang===lang));
+    }
+
+    const saved = localStorage.getItem('lang') || 'ko';
+    applyLangPage(saved);
+    document.querySelectorAll('.lang-switcher button')
+      .forEach(b=> b.addEventListener('click', ()=> applyLangPage(b.dataset.lang)));
   </script>
 </body>
 </html>

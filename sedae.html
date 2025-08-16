@@ -5,22 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>세 대 — 전시 공간 | 세 대</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    :root { --olive:#b5a14a; --olive-dark:#6b5b23; }
+    .site-header{border-bottom:1px solid #e5e7eb;}
+    .brand{color:var(--olive-dark); text-decoration:none; font-weight:700;}
+    .back-btn{
+      text-decoration:none; color:#333; font-weight:600;
+      padding:6px 10px; border:1px solid #ccc; border-radius:6px;
+      background:#f9f9f9; font-size:14px;
+    }
+    .back-btn:hover{background:#eee;}
+    .page{padding:42px 0 72px;}
+    .page-title{color:var(--olive-dark);}
+    .lead{color:#374151;}
+
+    /* 오른쪽 아래 언어 전환 버튼 */
+    .lang-switcher{
+      position:fixed; bottom:16px; right:16px; display:flex; gap:6px; z-index:1000;
+    }
+    .lang-switcher button{
+      background:#fff; border:1px solid #ccc; border-radius:6px;
+      padding:6px 10px; font-size:14px; cursor:pointer;
+      box-shadow:0 2px 6px rgba(0,0,0,.15);
+    }
+    .lang-switcher button.active{ background:var(--olive); color:#fff; border-color:var(--olive-dark); }
+  </style>
 </head>
 <body>
   <header class="site-header">
     <div class="container header-inner">
-      <a class="brand" href="index.html">세 대</a>
-      <nav class="nav">
-        <a href="handae.html">한 대</a>
-        <a href="dudae.html">두 대</a>
-        <a class="active" href="sedae.html" aria-current="page">세 대</a>
-      </nav>
+      <!-- 메인으로 돌아가기 버튼 -->
+      <a class="back-btn" href="index.html">← 메인으로</a>
     </div>
   </header>
 
   <main class="container page">
-    <h1 class="page-title">세 대 <span>전시 공간</span></h1>
-    <p class="lead">작가와 관람객이 느슨하게 연결되는 동네 전시실</p>
+    <h1 class="page-title" id="page-title">세 대 - 전시 공간</h1>
+    <p class="lead" id="desc">작가와 관람객이 느슨하게 연결되는 동네 전시실</p>
 
     <section class="section">
       <h2>전시/대관</h2>
@@ -40,6 +61,40 @@
   <footer class="site-footer">
     <div class="container">© <span id="year"></span> 세 대</div>
   </footer>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+  <!-- 오른쪽 아래 언어 선택 -->
+  <div class="lang-switcher">
+    <button data-lang="ko" class="active">한국어</button>
+    <button data-lang="en">English</button>
+    <button data-lang="zh">中文</button>
+    <button data-lang="vi">Tiếng Việt</button>
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const i18nPage = {
+      ko: { title: "세 대 - 전시 공간", desc: "작가와 관람객이 느슨하게 연결되는 동네 전시실" },
+      en: { title: "Se Dae - Exhibition Space", desc: "A neighborhood gallery loosely connecting artists and visitors." },
+      zh: { title: "三代 - 展览空间", desc: "一个松散连接艺术家和观众的社区展览室。" },
+      vi: { title: "Thế Đại - Không gian triển lãm", desc: "Một phòng triển lãm gắn kết lỏng lẻo giữa nghệ sĩ và khách tham quan." }
+    };
+
+    function applyLangPage(lang){
+      const t = i18nPage[lang]; if(!t) return;
+      document.documentElement.lang = lang;
+      document.getElementById('page-title').textContent = t.title;
+      document.getElementById('desc').textContent = t.desc;
+      localStorage.setItem('lang', lang);
+      document.querySelectorAll(".lang-switcher button").forEach(b=>b.classList.toggle("active", b.dataset.lang===lang));
+    }
+
+    const saved = localStorage.getItem('lang') || 'ko';
+    applyLangPage(saved);
+
+    document.querySelectorAll('.lang-switcher button').forEach(b=>{
+      b.addEventListener('click', ()=> applyLangPage(b.dataset.lang));
+    });
+  </script>
 </body>
 </html>

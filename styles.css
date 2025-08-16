@@ -46,6 +46,57 @@ body { font-family: "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, He
 /* Footer */
 .site-footer { border-top: 1px solid var(--border); background: #fff; }
 .site-footer .container { padding: 18px 0; color: var(--muted); font-size: 14px; text-align: center; }
+/* 플로팅 버튼 컨테이너 */
+.lang-fab {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column-reverse; /* 기본 버튼이 아래 */
+  align-items: flex-end;
+  gap: 8px;
+  z-index: 2000;
+}
+
+/* 메인 버튼 */
+#lang-toggle {
+  background: var(--olive);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,.2);
+  transition: transform 0.2s;
+}
+#lang-toggle:hover {
+  transform: scale(1.05);
+  background: var(--olive-dark);
+}
+
+/* 언어 메뉴 */
+.lang-menu {
+  display: none; /* 기본은 숨김 */
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.lang-menu button {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+}
+.lang-menu button.active {
+  background: var(--olive);
+  color: #fff;
+  border-color: var(--olive-dark);
+}
 
 /* Responsive */
 @media (max-width: 840px) { .cards { grid-template-columns: 1fr; } .nav a { margin-left: 8px; } }

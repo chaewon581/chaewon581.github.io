@@ -45,6 +45,20 @@
     .nearby-item { display:flex; justify-content:space-between; align-items:center; border:1px solid #e5e7eb; border-radius:10px; padding:10px 12px; }
     .nearby-title { font-weight:700; }
     .pill { background:#fff6d6; color:#6b5b23; border:1px solid #f2e6a8; padding:4px 8px; border-radius:999px; font-size:12px; }
+
+    /* 추가: 제목/설명 스타일 */
+    .page-title { color: var(--olive-dark); margin: 16px auto 6px; text-align:center; }
+    .page-desc { text-align:center; margin-bottom:20px; }
+
+    /* 언어 선택 버튼을 오른쪽 아래 고정 */
+    .lang-switcher {
+      position: fixed; bottom: 12px; right: 16px; display:flex; gap:6px; z-index: 1000;
+    }
+    .lang-switcher button {
+      background:#fff; border:1px solid #ccc; border-radius:6px;
+      padding:4px 8px; font-size:13px; cursor:pointer;
+    }
+    .lang-switcher button.active { background: var(--olive); color:#fff; border-color: var(--olive-dark); }
   </style>
 </head>
 <body>
@@ -53,6 +67,12 @@
     <h1>내 주변 <span>세 대</span>장소</h1>
     <a href="#" style="color:var(--olive)" aria-disabled="true">완료</a>
   </header>
+
+  <!-- 👇 제목과 문구를 헤더 바로 밑으로 이동 -->
+  <div class="container">
+    <h1 class="page-title" id="page-title">한 대 - 담소 공간</h1>
+    <p class="page-desc" id="desc">함께 대화하고 쉬어가는 열린 담소 공간입니다.</p>
+  </div>
 
   <main class="layout">
     <section class="card">
@@ -102,14 +122,19 @@
     <div class="container">© <span id="year"></span> 세 대</div>
   </footer>
 
+  <!-- 언어 선택 UI (오른쪽 아래 고정) -->
+  <div class="lang-switcher">
+    <button data-lang="ko" class="active">한국어</button>
+    <button data-lang="en">English</button>
+    <button data-lang="zh">中文</button>
+    <button data-lang="vi">Tiếng Việt</button>
+  </div>
+
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
     // ===== 설정값 =====
-    // 기본 목적지 좌표(변경 가능)
     const DEFAULT_DEST = { lat: 36.3629, lng: 127.3568, label: '세 대 (유성구)' };
-
-    // 주변 공유공간(샘플 데이터) — 실제 데이터로 교체하세요
     const PLACES = [
       { name: '세 대 라운지', type: '공유공간', lat: 36.3642, lng: 127.3561 },
       { name: '유성 공유작업실', type: '메이커스페이스', lat: 36.3605, lng: 127.3610 },
@@ -131,7 +156,6 @@
     let userMarker = null;
     let watchId = null;
 
-    // Routing Machine — OSRM(공용 서버)
     let routingControl = L.Routing.control({
       waypoints: [],
       lineOptions: { styles: [{ color: '#b5a14a', weight: 6, opacity: 0.9 }] },
@@ -267,10 +291,43 @@
       map.setView([dest.lat, dest.lng], 15);
     }
 
-    // 초기 한 번 시도 & 주변 목록 준비
+    // 초기 실행
     locateOnce();
     refreshNearby();
+    
+    // ===== 다국어 전환 =====
+    const i18nPage = {
+      ko: {
+        title: "한 대 - 담소 공간",
+        desc: "함께 대화하고 쉬어가는 열린 담소 공간입니다."
+      },
+      en: {
+        title: "Han Dae - Chatting Space",
+        desc: "An open lounge for conversations and relaxation."
+      },
+      zh: {
+        title: "一代 - 谈笑空间",
+        desc: "用于交流与休憩的开放空间。"
+      },
+      vi: {
+        title: "Hàn Đại - Không gian trò chuyện",
+        desc: "Không gian mở để trò chuyện và thư giãn."
+      }
+    };
+
+    function applyLangPage(lang){
+      const t = i18nPage[lang]; if(!t) return;
+      document.documentElement.lang = lang;
+      document.getElementById('page-title').textContent = t.title;
+      document.getElementById('desc').textContent = t.desc;
+      localStorage.setItem('lang', lang);
+      document.querySelectorAll(".lang-switcher button").forEach(b=>b.classList.toggle("active", b.dataset.lang===lang));
+    }
+    const saved = localStorage.getItem('lang') || 'ko';
+    applyLangPage(saved);
+    document.querySelectorAll('.lang-switcher button').forEach(b=>{
+      b.addEventListener('click', ()=> applyLangPage(b.dataset.lang));
+    });
   </script>
 </body>
-
 </html>
