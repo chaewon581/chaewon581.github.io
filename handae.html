@@ -59,7 +59,32 @@
       padding:4px 8px; font-size:13px; cursor:pointer;
     }
     .lang-switcher button.active { background: var(--olive); color:#fff; border-color: var(--olive-dark); }
+  
+    .text-zoom {
+      position: fixed; bottom: 16px; left: 16px;
+      display:flex; align-items:center; gap:6px; z-index:1000;
+      background:#fff; border:1px solid #ccc; border-radius:8px;
+      padding:6px 10px; box-shadow:0 2px 6px rgba(0,0,0,.15);
+      font-size:15px;
+    }
+    .text-zoom .zoom-label {
+      margin-right:4px; font-weight:600; color:#333;
+    }
+    .text-zoom button {
+      background:#fff; border:1px solid #ddd; border-radius:6px;
+      padding:4px 8px; font-size:15px; cursor:pointer;
+    }
+    .text-zoom button:disabled { opacity:.6; cursor:default; }
+
   </style>
+  <!-- 글자 확대/축소 -->
+  <div class="text-zoom" aria-label="글자 크기 조절">
+    <span class="zoom-label">🔍글자 읽기:</span>
+    <button id="zoomOut" title="작게">축소</button>
+    <button id="zoomReset" title="기본">기본</button>
+    <button id="zoomIn" title="크게">확대</button>
+  </div>
+  
 </head>
 <body>
   <header class="location-header">
@@ -102,7 +127,7 @@
       </div>
 
       <div style="margin-top:12px;">
-        <input id="query" class="item-input" type="text" placeholder="원하는 물건을 입력해주세요" style="padding:10px 12px; border-radius:10px; border:1px solid #ccc; width:100%;" />
+        <input id="query" class="item-input" type="text" placeholder="원하는 장소를 입력해주세요" style="padding:10px 12px; border-radius:10px; border:1px solid #ccc; width:100%;" />
         <p class="muted">※ 위치 권한을 허용하면 현재 위치에서 목적지까지 실제 도보 경로로 계산됩니다.</p>
       </div>
     </section>
@@ -138,6 +163,15 @@
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+    
+    // 글자 확대/축소 기능
+    let currentSize = 100;
+    function applyFontSize() {
+      document.body.style.fontSize = currentSize + "%";
+    }
+    document.getElementById('zoomIn').onclick = () => { currentSize = Math.min(currentSize+10, 150); applyFontSize(); };
+    document.getElementById('zoomOut').onclick = () => { currentSize = Math.max(currentSize-10, 70); applyFontSize(); };
+    document.getElementById('zoomReset').onclick = () => { currentSize = 100; applyFontSize(); };
 
     // ===== 설정값 =====
     const DEFAULT_DEST = { lat: 36.3629, lng: 127.3568, label: '세 대 (유성구)' };
