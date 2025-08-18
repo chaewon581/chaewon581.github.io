@@ -76,6 +76,7 @@ body { font-family: "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, He
   background: var(--olive-dark);
 }
 
+
 /* 언어 메뉴 */
 .lang-menu {
   display: none; /* 기본은 숨김 */
@@ -100,3 +101,56 @@ body { font-family: "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, He
 
 /* Responsive */
 @media (max-width: 840px) { .cards { grid-template-columns: 1fr; } .nav a { margin-left: 8px; } }
+
+/* 공지 버튼 공통 스타일이 이미 있다면 재사용 */
+.notice-btn{
+  display:inline-block; padding:10px 14px; border-radius:8px;
+  background:#b5a14a; color:#fff; text-decoration:none; font-weight:700;
+  box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.notice-btn:hover{ background:#a3913e; }
+
+/* 헤더용 작은 버전 */
+.notice-btn--small{
+  padding:8px 10px; font-size:13px; border-radius:6px;
+}
+
+/* 기존 .list 를 그리드로 변경 */
+.list{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 딱 2열 */
+  gap:16px;
+}
+
+/* 모바일에서는 1열로 */
+@media (max-width: 720px){
+  .list{ grid-template-columns: 1fr; }
+}
+
+/* 카드 모양 유지 */
+.notice{
+  border:1px solid #e5e7eb; border-radius:12px; background:#fff; overflow:hidden;
+  display:flex; flex-direction:column;
+}
+
+/* 정사각형 썸네일 영역 */
+.notice-banner-wrap{
+  width:100%;
+  aspect-ratio: 1 / 1;     /* 정사각형 */
+  background:#f3f4f6;
+  overflow:hidden;
+}
+
+/* 이미지가 잘리지 않도록 contain */
+.notice-banner{
+  width:100%;
+  height:100%;
+  object-fit: contain;      /* 전체가 보이도록 */
+  display:block;
+}
+
+/* 제목/메타 블록을 세로 정렬로 */
+.notice-summary{
+  display:flex; flex-direction:column; align-items:flex-start;
+  gap:8px; padding:12px 14px; background:#fff; border:0; width:100%; text-align:left; cursor:pointer;
+}
