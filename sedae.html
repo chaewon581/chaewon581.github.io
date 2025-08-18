@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>두 대 — 행사 안내 | 세 대</title>
+  <title>한 대 — 공지사항 | 세 대</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
     :root { --olive:#b5a14a; --olive-dark:#6b5b23; }
@@ -67,8 +67,8 @@
   </header>
 
   <main class="container page">
-    <h1 class="page-title" id="title">공지사항</h1>
-    <p class="lead" id="subtitle">두 대 - 세대가 교류할 수 있는 행사 안내를 확인하세요</p>
+    <h1 class="page-title" id="title">세 대 - 세상과 연결</h1>
+    <p class="lead" id="subtitle">세상과 연결하는 동호회 정보를 확인하세요.</p>
 
     <div class="toolbar">
       <input type="search" id="q" placeholder="검색: 제목/내용" aria-label="공지 검색" />
@@ -78,8 +78,9 @@
       </select>
       <select id="filter" aria-label="분류">
         <option value="all">전체</option>
-        <option value="notice">행사</option>
-      
+        <option value="notice">공지</option>
+        <option value="event">행사</option>
+        <option value="guide">안내</option>
       </select>
     </div>
 
@@ -139,7 +140,7 @@
     // ===== 다국어 리소스 =====
     const I18N = {
       ko: {
-        html:'ko', back:'← 한 대로', title:'공지사항', subtitle:'한 대 - 담소 공간의 소식과 안내를 확인하세요.',
+        html:'ko', back:'← 돌아가기', title:'세 대 - 세상과 연결', subtitle:'세상과 연결하는 동호회 정보를 확인하세요.',
         searchPh:'검색: 제목/내용', orderNew:'최신순', orderOld:'오래된순',
         filterAll:'전체', filterNotice:'공지', filterEvent:'행사', filterGuide:'안내',
         labels:{ notice:'공지', event:'행사', guide:'안내' }

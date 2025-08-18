@@ -3,158 +3,357 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>두 대 — 플리마켓 공간 | 세 대</title>
+  <title>두 대 — 행사 & 신청</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    :root { --olive:#b5a14a; --olive-dark:#6b5b23; }
-    body { background:#fff; color:#222; }
+    /* 페이지 전용 보조 스타일 (styles.css와 충돌 없는 범위) */
+    .toolbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:12px 0 16px;}
+    .toolbar input[type="search"]{flex:1; min-width:200px; padding:10px 12px; border:1px solid var(--border); border-radius:8px; font-size:14px;}
+    .toolbar select{padding:10px 12px; border:1px solid var(--border); border-radius:8px; font-size:14px;}
 
-    /* 상단 마켓 헤더 */
-    .market-header { position:sticky; top:0; background:#fff; border-bottom:1px solid #e5e7eb; z-index:5; }
-    .market-title { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; }
-    .market-title h1 { margin:0; font-size:20px; }
-    .market-title h1 .accent { color:var(--olive); font-weight:800; }
-
-    /* 필터 칩 */
-    .chips { display:flex; gap:8px; padding:8px 16px 12px; overflow:auto; }
-    .chip { white-space:nowrap; appearance:none; border:1px solid #e5e7eb; background:#f6f7f8; color:#222; padding:6px 10px; border-radius:999px; font-size:13px; line-height:1; cursor:pointer; }
-    .chip.is-active { background:#fff9d6; border-color:#f2e6a8; box-shadow: inset 0 0 0 2px var(--olive); }
-
-    /* 제목/설명 */
-    .container { max-width:920px; margin:0 auto; padding:0 16px; }
-    .page-title { color: var(--olive-dark); margin:16px auto 6px; text-align:center; }
-    .page-desc { text-align:center; margin:0 0 16px; color:#333; }
-
-    /* 리스트 카드 */
-    .list { padding:14px 16px 28px; display:grid; gap:14px; max-width:920px; margin:0 auto; }
-    .item { display:grid; grid-template-columns:120px 1fr; gap:16px; align-items:center; background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:14px; box-shadow:0 8px 20px rgba(0,0,0,.04); }
-    .thumb-wrap { display:flex; align-items:center; justify-content:center; }
-    .thumb { width:120px; height:120px; object-fit:contain; }
-    .text { display:flex; align-items:center; min-height:80px; }
-    .text p { margin:0; line-height:1.45; color:#222; font-size:15px; }
-    @media (max-width:560px){
-      .item { grid-template-columns:100px 1fr; }
-      .thumb { width:100px; height:100px; }
+    .events-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:16px;
     }
+    @media (max-width: 1024px){ .events-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media (max-width: 680px){ .events-grid{ grid-template-columns: 1fr; } }
 
-    /* 언어 스위처 */
-    .lang-switcher {
-      position:fixed; right:16px; bottom:12px; display:flex; gap:6px; z-index:1000;
+    .event-card{
+      background:#fff; border:1px solid var(--border); border-radius:14px; overflow:hidden;
+      display:flex; flex-direction:column;
     }
-    .lang-switcher button {
-      background:#fff; border:1px solid #ccc; border-radius:6px;
-      padding:4px 8px; font-size:13px; cursor:pointer;
+    .event-banner{ width:100%; aspect-ratio:16/9; object-fit:cover; display:block; background:#f3f4f6; }
+    .event-body{ padding:14px; display:flex; flex-direction:column; gap:8px; }
+    .event-title{ margin:0; font-size:18px; line-height:1.35; }
+    .event-meta{ display:flex; flex-wrap:wrap; gap:6px 10px; color:#6b7280; font-size:13px; }
+    .chip{ display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border:1px solid #eee; border-radius:999px; background:#fafafa; font-size:12px; }
+    .event-desc{ margin:6px 0 0; color:#374151; font-size:14px; line-height:1.6; }
+    .event-actions{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; }
+    .btn{
+      appearance:none; border:1px solid var(--border); background:#fff; color:#111;
+      padding:10px 12px; border-radius:10px; cursor:pointer;
     }
-    .lang-switcher button.active { background:var(--olive); color:#fff; border-color:var(--olive-dark); }
+    .btn-primary{
+      background:var(--olive); color:#fff; border-color:var(--olive-dark);
+    }
+    .btn-primary:disabled{ opacity:.6; cursor:not-allowed; }
+    .tag{ background:#fff6d6; border:1px solid #f2e6a8; color:#6b5b23; border-radius:999px; padding:2px 8px; font-size:12px; }
+
+    /* 모달 */
+    .modal{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:3000; }
+    .modal.open{ display:flex; }
+    .modal-backdrop{ position:absolute; inset:0; background:rgba(0,0,0,.45); }
+    .modal-dialog{
+      position:relative; width:min(720px, 92vw); max-height:90vh; overflow:auto;
+      background:#fff; border-radius:14px; box-shadow:var(--shadow);
+    }
+    .modal-header{ padding:14px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .modal-title{ margin:0; font-size:18px; }
+    .modal-body{ padding:16px; }
+    .modal-close{ background:#fff; border:1px solid var(--border); border-radius:8px; padding:6px 10px; cursor:pointer; }
+    .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    @media (max-width:640px){ .form-grid{ grid-template-columns:1fr; } }
+    .form-field{ display:flex; flex-direction:column; gap:6px; }
+    .form-field input, .form-field select, .form-field textarea{
+      padding:10px 12px; border:1px solid var(--border); border-radius:8px; font-size:14px;
+    }
+    .form-actions{ display:flex; gap:8px; justify-content:flex-end; margin-top:14px; }
+    .note{ color:#6b7280; font-size:13px; }
+
+    /* 임베드 구글폼 프레임 */
+    .embed-wrap{ width:100%; aspect-ratio: 4/5; background:#f3f4f6; border:0; }
   </style>
 </head>
 <body>
-  <!-- 상단 헤더 -->
-  <header class="market-header">
-    <div class="market-title">
-      <a href="index.html" aria-label="뒤로">←</a>
-      <h1><span class="accent">두 대</span> - 플리마켓 공간</h1>
-      <span style="color:var(--olive-dark); font-weight:700;">완료</span>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/">세 대</a>
+      <nav class="nav">
+        <a href="index.html">홈</a>
+        
+      </nav>
     </div>
-    <nav class="chips" aria-label="필터">
-      <button class="chip is-active">전체</button>
-      <button class="chip">방금 전</button>
-      <button class="chip">저렴한 순</button>
-      <button class="chip">최신 순</button>
-      <button class="chip">인기 순</button>
-    </nav>
   </header>
 
-  <!-- 제목/문구 -->
-  <div class="container">
-    <h1 class="page-title" id="page-title">두 대 - 플리마켓 공간</h1>
-    <p class="page-desc" id="desc">주민이 직접 교환·나눔·판매하는 플리마켓입니다.</p>
-  </div>
+  <main class="container page">
+    <h1 class="page-title">행사 안내 <span>시민참여 · 플리마켓 · 원데이 클래스</span></h1>
+    <p class="lead">세 대에서 열리는 다양한 행사 정보를 확인하고 바로 신청하세요</p>
 
-  <!-- 리스트 -->
-  <main class="list" aria-live="polite">
-    <article class="item">
-      <div class="thumb-wrap">
-        <img class="thumb" src="images/item-2.jpg" alt="캐릭터 스티커" />
-      </div>
-      <div class="text"><p><strong>급처)</strong> 옛날에 1번 쓴 모자 팝니다!!</p></div>
-    </article>
+    <div class="toolbar">
+      <input type="search" id="q" placeholder="검색: 제목/내용/장소" aria-label="행사 검색" />
+      <select id="cat">
+        <option value="all">전체 분류</option>
+        <option value="flea">플리마켓</option>
+        <option value="class">원데이 클래스</option>
+        <option value="community">커뮤니티</option>
+        <option value="exhibit">전시</option>
+      </select>
+      <select id="order">
+        <option value="upcoming">다가오는 순</option>
+        <option value="latest">최신 등록순</option>
+        <option value="oldest">오래된순</option>
+      </select>
+    </div>
 
-    <article class="item">
-      <div class="thumb-wrap">
-        <img class="thumb" src="images/item-1.jpg" alt="캐릭터 스티커" />
-      </div>
-      <div class="text"><p>아디다스 후드집업 2번 입었어요~ 네고 가능합니다.</p></div>
-    </article>
-
-    <article class="item">
-      <div class="thumb-wrap">
-        <img class="thumb" src="images/ggum.png" alt="캐릭터 스티커" />
-      </div>
-      <div class="text"><p>명령서를 발부할 때 첨부할 텍스트 메시지를 입력해 주세요</p></div>
-    </article>
-
-    <article class="item">
-      <div class="thumb-wrap">
-        <img class="thumb" src="images/ggum.png" alt="캐릭터 스티커" />
-      </div>
-      <div class="text"><p>명령서를 발부할 때 첨부할 텍스트 메시지를 입력해 주세요</p></div>
-    </article>
+    <section id="grid" class="events-grid" aria-live="polite"></section>
   </main>
 
-  <!-- 언어 전환 -->
-  <div class="lang-switcher">
-    <button data-lang="ko" class="active">한국어</button>
-    <button data-lang="en">English</button>
-    <button data-lang="zh">中文</button>
-    <button data-lang="vi">Tiếng Việt</button>
+  <footer class="site-footer">
+    <div class="container">© <span id="year"></span> 세 대</div>
+  </footer>
+
+  <!-- 신청 모달 -->
+  <div class="modal" id="applyModal" aria-hidden="true" role="dialog" aria-labelledby="applyTitle">
+    <div class="modal-backdrop" data-close="1"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title" id="applyTitle">행사 신청</h2>
+        <button class="modal-close" data-close="1">닫기</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- JS로 폼 또는 임베드 삽입 -->
+      </div>
+    </div>
   </div>
 
   <script>
-    // 필터 칩 토글
-    document.querySelectorAll('.chip').forEach(btn =>
-      btn.addEventListener('click', (e)=>{
-        document.querySelectorAll('.chip').forEach(c=>c.classList.remove('is-active'));
-        e.currentTarget.classList.add('is-active');
-      })
-    );
-
-    // 다국어 리소스
-    const i18nPage = {
-      ko: {
-        title: "두 대 - 플리마켓 공간",
-        desc: "주민이 직접 교환·나눔·판매하는 플리마켓입니다."
+    // ===== 예시 데이터 (원하는 만큼 추가하세요) =====
+    // form_mode: 'embed' (구글폼 iframe), 'link' (새 탭), 'inline' (내장 폼-Formspree)
+    const EVENTS = [
+      {
+        id: 101,
+        title: '월드 푸드 플리마켓 — World Food Flea Market',
+        category: 'flea',
+        date: '2025-09-21',      // YYYY-MM-DD
+        time: '11:00–16:00',
+        place: '세 대 마당',
+        banner: '/images/flea_fall.jpg',
+        desc: '다문화 가정과 어르신 분들이 함께 하는 월드 푸드 플리마켓!<br>중국 음식, 베트남 음식, 전통 한국 음식을 모두 저렴한 가격에 즐겨보세요~',
+        tags: ['플리마켓','시민참여'],
+        fee: '부스 참가비 10,000원',
+        capacity: '선착순 30팀',
+        status: 'open',           // open | closed | full
+        form_mode: 'inline',
+        form_action: 'https://formspree.io/f/yourid' // Formspree 폼 ID로 교체
       },
-      en: {
-        title: "Du Dae - Flea Market Space",
-        desc: "A community-driven flea market for exchange, sharing, and sales."
+      {
+        id: 102,
+        title: '다문화 가정을 위한 한국어 원데이 클래스',
+        category: 'class',
+        date: '2025-10-05',
+        time: '14:00–16:30',
+        place: '메이킹룸',
+        banner: '/images/class_leather.jpg',
+        desc: '한국어를 배우고 싶은 누구나 환영합니다.<br>대전시의 청년들이 쉽게 알려주는 생활 한국어',
+        tags: ['시민참여','원데이 클래스'],
+        fee: '참가비 3,000원(재료 포함)',
+        capacity: '정원 12명',
+        status: 'open',
+        form_mode: 'inline',
+        form_url: 'https://formspree.io/f/yourid' // 구글폼 embed 링크
       },
-      zh: {
-        title: "二代 - 跳蚤市场空间",
-        desc: "居民自发组织的交换、分享与售卖空间。"
+      {
+        id: 103,
+        title: '동네 전시 — 작은 풍경들',
+        category: 'exhibit',
+        date: '2025-09-01',
+        time: '상시 관람 (운영시간 내)',
+        place: '갤러리 벽',
+        banner: '/images/exhibit_smallscapes.jpg',
+        desc: '지역의 청년들, 어르신분들, 다문화 가정의 따뜻한 그림을 보러오세요<br>작품 신청은 아래 신청 버튼을 통해 신청하세요',
+        tags: ['전시'],
+        fee: '무료',
+        capacity: '자유 관람',
+        status: 'closed',         // 신청 종료 표시
+        form_mode: 'link',
+        form_url: 'https://example.com/notice/exhibit' // 외부 안내/신청 링크
       },
-      vi: {
-        title: "Du Đại - Không gian chợ trời",
-        desc: "Chợ trời cộng đồng để trao đổi, chia sẻ và bán."
+      {
+        id: 104,
+        title: 'Xin chào! 간단히 배우는 기초 베트남어',
+        category: 'class',
+        date: '2025-09-11',
+        time: '16:00–17:00',
+        place: '메이킹룸',
+        banner: '/images/exhibit_smallscapes.jpg',
+        desc: '베트남에서 온 유학생이 알려주는 기초 베트남어<br>가볍게 오셔서 새로운 배움 얻어가세요',
+        tags: ['시민참여','원데이 클래스'],
+        fee: '3,000원',
+        capacity: '정원 12명',
+        status: 'open',         // 신청 종료 표시
+        form_mode: 'link',
+        form_url: 'https://example.com/notice/exhibit' // 외부 안내/신청 링크
       }
-    };
+    ];
 
-    function applyLangPage(lang){
-      const t = i18nPage[lang]; if(!t) return;
-      document.documentElement.lang = lang;
-      document.getElementById('page-title').textContent = t.title;
-      document.getElementById('desc').textContent = t.desc;
-      localStorage.setItem('lang', lang);
-      document.querySelectorAll(".lang-switcher button")
-        .forEach(b=>b.classList.toggle("active", b.dataset.lang===lang));
+    // ===== 유틸 =====
+    const $ = (sel, el=document)=> el.querySelector(sel);
+    const $$ = (sel, el=document)=> [...el.querySelectorAll(sel)];
+    const today = new Date().toISOString().slice(0,10);
+
+    function cmpDate(a,b){ return a.date.localeCompare(b.date); }
+    function upcomingFirst(a,b){
+      // 과거/미래 구분 후 미래 우선, 같은 영역 내에서는 가까운 날짜가 먼저
+      const now = today;
+      const afut = a.date >= now, bfut = b.date >= now;
+      if (afut && !bfut) return -1;
+      if (!afut && bfut) return 1;
+      return cmpDate(a,b);
     }
 
-    const saved = localStorage.getItem('lang') || 'ko';
-    applyLangPage(saved);
-    document.querySelectorAll('.lang-switcher button')
-      .forEach(b=> b.addEventListener('click', ()=> applyLangPage(b.dataset.lang)));
+    // ===== 렌더 =====
+    const grid = document.getElementById('grid');
+    const q = document.getElementById('q');
+    const cat = document.getElementById('cat');
+    const order = document.getElementById('order');
+
+    function render(){
+      const term = (q.value || '').trim().toLowerCase();
+      const c = cat.value;
+
+      let arr = EVENTS.filter(ev=>{
+        if (c!=='all' && ev.category!==c) return false;
+        if (!term) return true;
+        const hay = [ev.title, ev.desc, ev.place, (ev.tags||[]).join(' ')].join(' ').toLowerCase();
+        return hay.includes(term);
+      });
+
+      if (order.value==='upcoming') arr.sort(upcomingFirst);
+      else if (order.value==='latest') arr.sort((a,b)=> b.id - a.id); // 임의: id 최신순
+      else arr.sort(cmpDate);
+
+      grid.innerHTML = '';
+      arr.forEach(ev=>{
+        const disabled = ev.status!=='open';
+        const tagHtml = (ev.tags||[]).map(t=>`<span class="tag">${t}</span>`).join(' ');
+        const statusLabel = ev.status==='full' ? '마감' : (ev.status==='closed' ? '신청종료' : null);
+        grid.insertAdjacentHTML('beforeend', `
+          <article class="event-card">
+            <img class="event-banner" src="${ev.banner || '/images/placeholder.jpg'}" alt="${ev.title}">
+            <div class="event-body">
+              <div class="event-meta">
+                <span class="chip">📅 ${ev.date} ${ev.time? '· '+ev.time:''}</span>
+                <span class="chip">📍 ${ev.place}</span>
+                ${ev.fee ? `<span class="chip">💳 ${ev.fee}</span>`:''}
+                ${ev.capacity ? `<span class="chip">👥 ${ev.capacity}</span>`:''}
+              </div>
+              <h3 class="event-title">${ev.title}</h3>
+              <p class="event-desc">${ev.desc}</p>
+              <div class="event-actions">
+                <div>${tagHtml}</div>
+                <div>
+                  ${statusLabel ? `<span class="chip" title="신청 불가">${statusLabel}</span>`:''}
+                  <button class="btn btn-primary" ${disabled?'disabled':''} data-apply="${ev.id}">신청하기</button>
+                </div>
+              </div>
+            </div>
+          </article>
+        `);
+      });
+
+      // 버튼 이벤트
+      $$('button[data-apply]').forEach(b=>{
+        b.onclick = ()=>{
+          const id = Number(b.dataset.apply);
+          const ev = EVENTS.find(x=>x.id===id);
+          if (!ev) return;
+          openApply(ev);
+        };
+      });
+    }
+
+    [q,cat,order].forEach(el=>{
+      el.addEventListener('input', render);
+      el.addEventListener('change', render);
+    });
+
+    // ===== 모달/신청 동작 =====
+    const modal = document.getElementById('applyModal');
+    const modalBody = document.getElementById('modalBody');
+    $$('.modal [data-close]').forEach(el=> el.addEventListener('click', closeModal));
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+    function openApply(ev){
+      $('#applyTitle').textContent = `신청: ${ev.title}`;
+
+      if (ev.form_mode==='embed' && ev.form_url){
+        // 구글폼 임베드
+        modalBody.innerHTML = `
+          <p class="note">아래 양식을 제출해 주세요.</p>
+          <iframe class="embed-wrap" src="${ev.form_url}" loading="lazy"></iframe>
+        `;
+        showModal();
+        return;
+      }
+
+      if (ev.form_mode==='link' && ev.form_url){
+        // 외부 링크 새 탭
+        window.open(ev.form_url, '_blank', 'noopener');
+        return;
+      }
+
+      // 기본: 내장 폼 (Formspree)
+      const action = ev.form_action || 'https://formspree.io/f/yourid'; // 본인 ID로 교체
+      modalBody.innerHTML = `
+        <form id="applyForm" action="${action}" method="POST">
+          <input type="hidden" name="_subject" value="[세 대 신청] ${ev.title}">
+          <input type="hidden" name="event_id" value="${ev.id}">
+          <input type="hidden" name="event_title" value="${ev.title}">
+          <div class="form-grid">
+            <label class="form-field">
+              <span>이름*</span>
+              <input type="text" name="name" required>
+            </label>
+            <label class="form-field">
+              <span>연락처(휴대폰)*</span>
+              <input type="tel" name="phone" placeholder="010-1234-5678" required>
+            </label>
+            <label class="form-field">
+              <span>이메일</span>
+              <input type="email" name="email" placeholder="you@example.com">
+            </label>
+            <label class="form-field">
+              <span>인원</span>
+              <select name="count">
+                <option value="1">1명</option>
+                <option value="2">2명</option>
+                <option value="3">3명</option>
+                <option value="4">4명</option>
+              </select>
+            </label>
+          </div>
+          <label class="form-field" style="margin-top:8px;">
+            <span>비고(요청사항)</span>
+            <textarea name="note" rows="4" placeholder="특이사항, 원하는 점 등이 있으면 적어주세요."></textarea>
+          </label>
+          <p class="note">제출 시 개인정보 처리에 동의한 것으로 간주됩니다. (운영/연락 목적 외 사용하지 않습니다)</p>
+          <div class="form-actions">
+            <button type="button" class="btn" data-close="1">취소</button>
+            <button type="submit" class="btn btn-primary">제출</button>
+          </div>
+        </form>
+      `;
+      showModal();
+
+      const form = $('#applyForm');
+      form.addEventListener('submit', (e)=>{
+        // 간단 검증
+        const phone = form.phone.value.trim();
+        if (!/^\d{2,3}-?\d{3,4}-?\d{4}$/.test(phone)){
+          e.preventDefault();
+          alert('연락처 형식을 확인해 주세요.');
+          form.phone.focus();
+        }
+      });
+    }
+
+    function showModal(){ modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); }
+    function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+
+    // ===== Init =====
+    document.getElementById('year').textContent = new Date().getFullYear();
+    render();
   </script>
-
-
 </body>
 </html>
