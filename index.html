@@ -67,6 +67,23 @@
       padding:4px 8px; font-size:15px; cursor:pointer;
     }
     .text-zoom button:disabled { opacity:.6; cursor:default; }
+    /* 공통: 안전 영역 반영 */
+.lang-switcher, .text-zoom{
+  bottom: calc(env(safe-area-inset-bottom, 16px) + 0px);
+}
+.text-zoom{ left: calc(env(safe-area-inset-left, 16px)); }
+.lang-switcher{ right: calc(env(safe-area-inset-right, 16px)); }
+
+/* 모바일에서 언어 스위처만 한 칸 위로 */
+@media (max-width: 480px){
+  .lang-switcher{
+    bottom: calc(env(safe-area-inset-bottom, 16px) + 56px);
+  }
+  /* 버튼 글자 조금 축소 (선택) */
+  .lang-switcher button{ font-size: 12px; padding: 4px 6px; }
+  .text-zoom{ font-size: 14px; }
+}
+
   </style>
 </head>
 <body>
