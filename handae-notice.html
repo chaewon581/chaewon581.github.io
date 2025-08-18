@@ -41,7 +41,7 @@
 
     /* 배너 */
     .notice-banner-wrap{
-      position:relative; width:100%; aspect-ratio:16/9; background:#f3f4f6; overflow:hidden;
+      position:relative; width:100%; aspect-ratio:1/1; background:#f3f4f6; overflow:hidden;
     }
     .notice-banner{
       position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
@@ -101,11 +101,12 @@
     // ===== 더미 데이터 =====
     const NOTICES = [
       {
-        id: 1, type: 'notice', date: '2025-08-10', title_ko: '8월 운영 시간 안내',
-        body_ko: '여름 휴가 기간 동안 주중 11:00–19:00, 주말 12:00–18:00로 단축 운영합니다.',
+        id: 1, type: 'notice', date: '2025-08-10', title_ko: '2025 3분기 유성구 마을 회의 안내',
+        body_ko: '시민들과 함께 진행하는 2025년 3분기 유성구 마을 회의를 진행합니다.<br>일시: 2025년 9월 1일 오전 10시<br>장소: 유성구청 3층 회의실',
         title_en: 'August Opening Hours', body_en: 'Shortened hours during summer holidays: Weekdays 11:00–19:00, Weekends 12:00–18:00.',
         title_zh: '8月运营时间', body_zh: '暑期期间缩短营业时间：工作日 11:00–19:00，周末 12:00–18:00。',
-        title_vi: 'Giờ mở cửa tháng 8', body_vi: 'Giờ mở cửa rút ngắn: Thứ 2–6 11:00–19:00, Cuối tuần 12:00–18:00.'
+        title_vi: 'Giờ mở cửa tháng 8', body_vi: 'Giờ mở cửa rút ngắn: Thứ 2–6 11:00–19:00, Cuối tuần 12:00–18:00.' , 
+        banner: '/images/maeul.png'
       },
       {
         id: 2,
@@ -119,11 +120,20 @@
         banner: '/images/read.png'        // 루트 기준 경로 권장
       },
       {
-        id: 3, type: 'guide', date: '2025-07-30', title_ko: '대관 문의 방법',
+        id: 3, type: 'guide', date: '2025-07-30', title_ko: '공유공간 대관 문의 방법',
         body_ko: '대관은 이메일 또는 현장 접수로 신청 가능합니다. 기본 사용료와 장비 목록은 첨부 안내를 참고하세요.',
         title_en: 'How to Rent the Space', body_en: 'Apply via email or on-site. See the attached guide for fees and equipment.',
         title_zh: '场地租借指南', body_zh: '可通过邮件或现场申请。费用和设备清单见附加说明。',
-        title_vi: 'Cách thuê không gian', body_vi: 'Đăng ký qua email hoặc trực tiếp. Xem phí và thiết bị trong hướng dẫn đính kèm.'
+        title_vi: 'Cách thuê không gian', body_vi: 'Đăng ký qua email hoặc trực tiếp. Xem phí và thiết bị trong hướng dẫn đính kèm.',
+        banner: '/images/gongu.png'
+      },
+      {
+        id: 4, type: 'event', date: '2025-07-30', title_ko: '월평동 러닝 모임 회원 모집',
+        body_ko: '함께 달리면서 운동하실 분 환영합니다.<br>일시: 매주 화, 금 저녁 7시<br>장소: 유성구청 앞에서 모여 신세계 백화점까지 달려요',
+        title_en: 'How to Rent the Space', body_en: 'Apply via email or on-site. See the attached guide for fees and equipment.',
+        title_zh: '场地租借指南', body_zh: '可通过邮件或现场申请。费用和设备清单见附加说明。',
+        title_vi: 'Cách thuê không gian', body_vi: 'Đăng ký qua email hoặc trực tiếp. Xem phí và thiết bị trong hướng dẫn đính kèm.',
+        banner: '/images/running.png'
       }
     ];
 
@@ -258,5 +268,8 @@
     document.getElementById('year')?.remove();
     applyLang(localStorage.getItem('lang') || 'ko');
   </script>
+
+
+
 </body>
 </html>

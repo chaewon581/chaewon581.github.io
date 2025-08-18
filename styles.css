@@ -1,7 +1,13 @@
-/* Reset & base */
+/* =========================
+   Reset & Base
+========================= */
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
-body { font-family: "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; color: #111; background: #fafafa; }
+body {
+  font-family: "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  color: #111;
+  background: #fafafa;
+}
 
 :root {
   --brand: #111;
@@ -9,31 +15,53 @@ body { font-family: "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, He
   --card: #ffffff;
   --border: #e5e7eb;
   --shadow: 0 10px 25px rgba(0,0,0,.06);
+
+  /* 추가: 공용 올리브 팔레트 */
+  --olive:#b5a14a;
+  --olive-dark:#6b5b23;
 }
 
 .container { width: min(1100px, 92vw); margin: 0 auto; }
 
-/* Header */
-.site-header { position: sticky; top: 0; background: rgba(255,255,255,.8); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); z-index: 10; }
+/* =========================
+   Header
+========================= */
+.site-header {
+  position: sticky; top: 0;
+  background: rgba(255,255,255,.8);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
+}
 .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
 .brand { font-weight: 800; letter-spacing: -0.02em; text-decoration: none; color: var(--brand); font-size: 22px; }
 .nav a { margin-left: 14px; padding: 8px 12px; text-decoration: none; color: #222; border-radius: 10px; }
 .nav a:hover { background: #f3f4f6; }
 .nav a.active { background: #111; color: #fff; }
 
-/* Hero */
+/* =========================
+   Hero
+========================= */
 .hero { padding: 72px 0 48px; text-align: center; }
 .hero-title { font-size: clamp(40px, 6vw, 64px); margin: 0 0 10px; letter-spacing: -0.02em; }
 .hero-sub { color: var(--muted); margin: 0 0 28px; }
 
-.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 22px; }
-.card { display: block; background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 22px; text-decoration: none; color: inherit; box-shadow: var(--shadow); transition: transform .15s ease, box-shadow .15s ease; }
+.cards {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 22px;
+}
+.card {
+  display: block; background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 22px;
+  text-decoration: none; color: inherit; box-shadow: var(--shadow);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
 .card:hover { transform: translateY(-4px); box-shadow: 0 16px 30px rgba(0,0,0,.08); }
 .card h2 { display: flex; align-items: baseline; justify-content: space-between; margin: 0 0 6px; font-size: 22px; }
 .card h2 span { font-size: 14px; font-weight: 600; color: var(--muted); }
 .card p { margin: 0; color: #374151; }
 
-/* Pages */
+/* =========================
+   Pages
+========================= */
 .page { padding: 42px 0 72px; }
 .page-title { font-size: clamp(28px, 4.5vw, 44px); margin: 0 0 12px; }
 .page-title span { font-size: 16px; color: var(--muted); margin-left: 8px; }
@@ -43,114 +71,108 @@ body { font-family: "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, He
 .bullets { margin: 8px 0 0 0; padding-left: 18px; }
 .bullets li { margin: 6px 0; }
 
-/* Footer */
+/* =========================
+   Footer
+========================= */
 .site-footer { border-top: 1px solid var(--border); background: #fff; }
 .site-footer .container { padding: 18px 0; color: var(--muted); font-size: 14px; text-align: center; }
-/* 플로팅 버튼 컨테이너 */
+
+/* =========================
+   Floating Lang Buttons
+========================= */
 .lang-fab {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
-  display: flex;
-  flex-direction: column-reverse; /* 기본 버튼이 아래 */
-  align-items: flex-end;
-  gap: 8px;
+  position: fixed; bottom: 16px; right: 16px;
+  display: flex; flex-direction: column-reverse; align-items: flex-end; gap: 8px;
   z-index: 2000;
 }
-
-/* 메인 버튼 */
 #lang-toggle {
-  background: var(--olive);
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 52px;
-  height: 52px;
-  font-size: 20px;
-  cursor: pointer;
+  background: var(--olive); color: #fff; border: none; border-radius: 50%;
+  width: 52px; height: 52px; font-size: 20px; cursor: pointer;
   box-shadow: 0 4px 12px rgba(0,0,0,.2);
-  transition: transform 0.2s;
+  transition: transform 0.2s, background 0.2s;
 }
-#lang-toggle:hover {
-  transform: scale(1.05);
-  background: var(--olive-dark);
-}
-
-
-/* 언어 메뉴 */
-.lang-menu {
-  display: none; /* 기본은 숨김 */
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 8px;
-}
+#lang-toggle:hover { transform: scale(1.05); background: var(--olive-dark); }
+.lang-menu { display: none; flex-direction: column; gap: 6px; margin-bottom: 8px; }
 .lang-menu button {
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 14px;
-  cursor: pointer;
+  background: #fff; border: 1px solid #ccc; border-radius: 6px;
+  padding: 6px 10px; font-size: 14px; cursor: pointer;
   box-shadow: 0 2px 6px rgba(0,0,0,.15);
 }
-.lang-menu button.active {
-  background: var(--olive);
-  color: #fff;
-  border-color: var(--olive-dark);
+.lang-menu button.active { background: var(--olive); color: #fff; border-color: var(--olive-dark); }
+
+/* =========================
+   Responsive (Global)
+========================= */
+@media (max-width: 840px) {
+  .cards { grid-template-columns: 1fr; }
+  .nav a { margin-left: 8px; }
 }
 
-/* Responsive */
-@media (max-width: 840px) { .cards { grid-template-columns: 1fr; } .nav a { margin-left: 8px; } }
-
-/* 공지 버튼 공통 스타일이 이미 있다면 재사용 */
+/* =========================
+   Notice CTA button (공통)
+========================= */
 .notice-btn{
   display:inline-block; padding:10px 14px; border-radius:8px;
   background:#b5a14a; color:#fff; text-decoration:none; font-weight:700;
   box-shadow:0 2px 6px rgba(0,0,0,.15);
 }
 .notice-btn:hover{ background:#a3913e; }
+.notice-btn--small{ padding:8px 10px; font-size:13px; border-radius:6px; }
 
-/* 헤더용 작은 버전 */
-.notice-btn--small{
-  padding:8px 10px; font-size:13px; border-radius:6px;
-}
-
-/* 기존 .list 를 그리드로 변경 */
+/* =========================
+   Notice List (Grid 2-cols)
+========================= */
+/* 기존 flex 선언과 충돌을 피하려면 notice.html의 <style> 안 .list 선언을 제거하세요. */
 .list{
-  display:grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 딱 2열 */
-  gap:16px;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
-
-/* 모바일에서는 1열로 */
 @media (max-width: 720px){
   .list{ grid-template-columns: 1fr; }
 }
 
-/* 카드 모양 유지 */
+/* 카드 기본(페이지 내부 스타일이 있다면 생략 가능) */
 .notice{
-  border:1px solid #e5e7eb; border-radius:12px; background:#fff; overflow:hidden;
-  display:flex; flex-direction:column;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:#fff;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
 }
 
-/* 정사각형 썸네일 영역 */
+/* =========================
+   Square Banner (정사각형 썸네일)
+========================= */
 .notice-banner-wrap{
   width:100%;
-  aspect-ratio: 1 / 1;     /* 정사각형 */
+  aspect-ratio:1/1;          /* 정사각형 고정 */
   background:#f3f4f6;
   overflow:hidden;
 }
-
-/* 이미지가 잘리지 않도록 contain */
 .notice-banner{
   width:100%;
   height:100%;
-  object-fit: contain;      /* 전체가 보이도록 */
+  object-fit:contain;         /* 전체 보이기(여백 허용). 꽉 채우려면 cover */
   display:block;
 }
 
-/* 제목/메타 블록을 세로 정렬로 */
+/* 제목/메타 영역 버튼 (페이지 내부와 겹치면 생략) */
 .notice-summary{
-  display:flex; flex-direction:column; align-items:flex-start;
-  gap:8px; padding:12px 14px; background:#fff; border:0; width:100%; text-align:left; cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:8px;
+  padding:12px 14px;
+  background:#fff;
+  border:0;
+  width:100%;
+  text-align:left;
+  cursor:pointer;
 }
+.notice-summary:hover{ background:#fffdfa; }
+.notice-meta{ display:flex; gap:8px; align-items:center; color:#6b7280; font-size:12px; }
+.badge{ background:#fff6d6; border:1px solid #f2e6a8; color:#6b5b23; border-radius:999px; padding:2px 8px; font-size:12px; }
+.notice-body{ display:none; padding:0 16px 16px; color:#374151; line-height:1.6; }
+.notice.open .notice-body{ display:block; }
